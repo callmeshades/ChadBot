@@ -6,6 +6,7 @@ using dotenv.net;
 using ChadBot.Actions;
 using ChadBot.Core;
 using ChadBot.Core.Data;
+using Microsoft.Extensions.DependencyInjection;
 
 DotEnv.Load();
 
@@ -41,6 +42,15 @@ GatewayClient client = new GatewayClient(
     }
 );
 
+var services = new ServiceCollection()
+    .AddHttpClient()
+    .BuildServiceProvider();
+
+if (services == null)
+{
+    throw new NullReferenceException("The services are required");
+}
+
 /**
  * Create the CommandService and add all modules found throughout the application
  */
@@ -52,7 +62,7 @@ using var mainContext = new MainContext();
 /**
  * Action to handle commands as they come in
  */
-HandleMessagesAction.Execute(config, client, commandService, mainContext);
+HandleMessagesAction.Execute(config, client, commandService, mainContext, services);
 
 await client.StartAsync();
 await Task.Delay(-1);

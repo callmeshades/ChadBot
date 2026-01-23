@@ -13,7 +13,7 @@ namespace ChadBot.Actions
         /// It checks that the message is intended for the bot.
         /// If we fail to find a command or execute a command, we return the error that occured.
         /// </summary>
-        public static void Execute(ApplicationConfig config, GatewayClient client, CommandService<MainCommandContext> service, MainContext context)
+        public static void Execute(ApplicationConfig config, GatewayClient client, CommandService<MainCommandContext> service, MainContext context, IServiceProvider services)
         {
             client.MessageCreate += async message =>
             {
@@ -27,7 +27,7 @@ namespace ChadBot.Actions
                 /**
                  * Execute the command
                  */
-                var result = await service.ExecuteAsync(prefixLength: 1, new MainCommandContext(client, message, context));
+                var result = await service.ExecuteAsync(prefixLength: 1, new MainCommandContext(client, message, context, services));
 
                 /*
                  * Check if the execution failed
